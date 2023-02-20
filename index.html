@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>Email Signatures</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+  </style>
+</head>
+<body>
+  <div id="signatures"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+  <script src="signature_generator.js"></script>
+  <script>
+    var googleSheetsUrl = "https://docs.google.com/spreadsheets/d/1lwRcNMTtWUPvNjIX8te1i8L0MAvyHLMvfYStrCVtuM8/gviz/tq?tqx=out:csv&sheet=Sheet1";
+    var contactData = [];
+
+    Papa.parse(googleSheetsUrl, {
+      header: true,
+      download: true,
+      complete: function(results) {
+        results.data.forEach(function(row) {
+          var contact = {
+            name: row.Name,
+            title: row.Title,
+            mobile: row.Mobile,
+            email: row.Email,
+            phone: row.Phone,
+            website: row.Website,
+            address: row.Address,
+            calendar: row.Calendar
+          };
+          contactData.push(contact);
+        });
+
+        // Call the function to generate the HTML signatures, passing in the contact data
+        var signatures = generateSignatures(contactData);
+        var signaturesDiv = document.getElementById("signatures");
+        signaturesDiv.innerHTML = signatures;
+      }
+    });
+  </script>
+</body>
+</html>
